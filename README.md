@@ -1,2 +1,2 @@
-# polman-dsk-ros2-amr
-Autonomous Mobile Robot (AMR) using ROS2 framework developed in Bandung Polytechnic for Manufacturing (Polman Bandung)
+# PoleBot Land
+Colaborative Mobile and Delta Robot working in Ricefield Land area using ROS2 framework developed in Bandung Polytechnic for Manufacturing (Polman Bandung)
