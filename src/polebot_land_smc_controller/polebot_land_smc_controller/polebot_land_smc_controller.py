@@ -33,22 +33,37 @@ class SmcControllerNode(Node):
         self.PHI = 2.0         # Boundary layer untuk fungsi sat()
 
         # --- State & Target ---
-        self.initial_x = 10.0
+        self.initial_x = 0.0
         self.initial_y = 0.0
 
         # Inisialisasi posisi saat ini dengan posisi awal
         self.current_x = self.initial_x
         self.current_y = self.initial_y
-        self.current_theta = 2.0
+        self.current_theta = 0.0  # Start facing forward
 
         self.trajectory_received = False
         self.final_target_x = None
 
         # --- Subscribers & Publisher ---
-        self.odom_sub = self.create_subscription(Odometry, '/diff_drive_controller/odom', self.odom_callback, 10)
+        # Create QoS profile for reliable odometry
+        qos_profile = rclpy.qos.QoSProfile(
+            reliability=rclpy.qos.ReliabilityPolicy.RELIABLE,
+            durability=rclpy.qos.DurabilityPolicy.VOLATILE,
+            history=rclpy.qos.HistoryPolicy.KEEP_LAST,
+            depth=10
+        )
+        
+        self.odom_sub = self.create_subscription(
+            Odometry, 
+            '/odom',  # Changed from /diff_drive_controller/odom to /odom
+            self.odom_callback, 
+            qos_profile
+        )
         self.imu_sub = self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
-        self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 10)  # Path subscriber
+        self.path_sub = self.create_subscription(Path, '/line_trajectory', self.path_callback, 10)
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel_unstamped', 10)
+        
+        self.get_logger().info('Subscribed to /odom for odometry data')
 
         # --- Loop Kontrol ---
         self.timer = self.create_timer(0.1, self.control_loop) # 10 Hz
@@ -59,21 +74,27 @@ class SmcControllerNode(Node):
     #     self.current_y = msg.pose.pose.position.y # <<< UBAH INI
 
     def odom_callback(self, msg):
-        odom_x = msg.pose.pose.position.x
-        odom_y = msg.pose.pose.position.y
-        self.current_x = self.initial_x + odom_x
-        self.current_y = self.initial_y + odom_y
+        # Directly use odometry values
+        self.current_x = msg.pose.pose.position.x
+        self.current_y = msg.pose.pose.position.y
+        # Log odometry data for debugging
+        self.get_logger().debug(f'Odometry update: x={self.current_x:.2f}, y={self.current_y:.2f}')
 
     def imu_callback(self, msg):
         self.current_theta = euler_from_quaternion(msg.orientation)
 
     def path_callback(self, msg):
-        # <<< MODIFIKASI 2: Buka gerbang saat path diterima dan simpan titik akhir >>>
-        if msg.poses and not self.trajectory_received:
-            # Ambil koordinat x dari pose terakhir dalam path
+        """Handle incoming path messages."""
+        if msg.poses:
             self.final_target_x = msg.poses[-1].pose.position.x
-            self.trajectory_received = True # Buka gerbang!
-            self.get_logger().info(f"Trajectory received with {len(msg.poses)} points. Final target x: {self.final_target_x}. Starting control.")
+            self.trajectory_received = True
+            # Store the path for reference
+            self.current_path = msg
+            self.get_logger().info(
+                f"New trajectory received: {len(msg.poses)} points, "
+                f"Start: ({msg.poses[0].pose.position.x:.2f}, {msg.poses[0].pose.position.y:.2f}), "
+                f"End: ({self.final_target_x:.2f}, {msg.poses[-1].pose.position.y:.2f})"
+            )
 
     # def path_callback(self, msg):
     #     # Ambil titik pertama dari path
@@ -89,14 +110,25 @@ class SmcControllerNode(Node):
         else: return s / phi
 
     def control_loop(self):
+        """Main control loop for trajectory tracking."""
         if not self.trajectory_received:
+            # If no trajectory yet, wait
+            if not hasattr(self, '_waiting_reported'):
+                self.get_logger().info('Waiting for trajectory...')
+                self._waiting_reported = True
             return
-    
+            
         # Target untuk garis lurus y=0
         y_d = 0.0
         
         # 1. Hitung error y
         y_error = self.current_y - y_d
+        
+        # Log state information
+        self.get_logger().info(
+            f'Current State: x={self.current_x:.2f}, y={self.current_y:.2f}, θ={self.current_theta:.2f}, '
+            f'y_error={y_error:.2f}'
+        )
         
         # 2. Hitung theta_d (orientasi target dinamis)
         theta_d = -math.atan(self.Ky * y_error)

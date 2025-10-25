@@ -8,7 +8,7 @@
     </plugin>
     <plugin name="ignition::gazebo::systems::Imu" filename="libignition-gazebo-imu-system.so" />
     <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
-      <parameters>$(find robotpadi)/config/diff_drive_controller.yaml</parameters>
+      <parameters>$(find polebot_land)/config/diff_drive_controller.yaml</parameters>
     </plugin>
   </gazebo> -->
 
@@ -17,7 +17,7 @@
       <ros>
           <namespace>$(arg namespace)</namespace>
       </ros>
-      <parameters>$(find robotpadi)/config/diff_drive_controller.yaml</parameters>
+      <parameters>$(find polebot_land)/config/diff_drive_controller.yaml</parameters>
       </plugin>
   </gazebo>
 </robot>

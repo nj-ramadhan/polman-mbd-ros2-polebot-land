@@ -3,8 +3,8 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:property name="mesh_path" value="$(find robotpadi)/meshes"/>
-  <xacro:include filename="$(find robotpadi)/urdf/imu.xacro" />
+  <xacro:property name="mesh_path" value="$(find polebot_land)/meshes"/>
+  <xacro:include filename="$(find polebot_land)/urdf/imu.xacro" />
   <link name="base_footprint"/>
 
   <joint name="base_footprint_to_base_link_joint" type="fixed">
@@ -362,7 +362,7 @@
   <!-- transmission -->
   <plugin name="gazebo_ros_odometry" filename="libgazebo_ros_odometry.so">
     <ros>
-      <robotNamespace>/robotpadi</robotNamespace>
+      <robotNamespace>/polebot_land</robotNamespace>
       <topicName>/odom</topicName>
     </ros>
     <publish_odom>true</publish_odom>

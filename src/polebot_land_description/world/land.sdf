@@ -1,0 +1,776 @@
+<sdf version='1.10'>
+  <world name='land'>
+    <scene>
+      <grid>false</grid>
+      <ambient>0.400000006 0.400000006 0.400000006 1</ambient>
+      <background>0.699999988 0.699999988 0.699999988 1</background>
+      <shadows>true</shadows>
+    </scene>
+    <physics name='1ms' type='ode'>
+      <max_step_size>0.0030000000000000001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+    <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
+    <plugin name='gz::sim::systems::UserCommands' filename='gz-sim-user-commands-system'/>
+    <plugin name='gz::sim::systems::SceneBroadcaster' filename='gz-sim-scene-broadcaster-system'/>
+    <plugin name='gz::sim::systems::Sensors' filename='gz-sim-sensors-system'>
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin name='gz::sim::systems::Imu' filename='gz-sim-imu-system'/>
+    <scene>
+      <shadows>false</shadows>
+      <ambient>0.400000006 0.400000006 0.400000006 1</ambient>
+      <background>0.699999988 0.699999988 0.699999988 1</background>
+    </scene>
+    <gui fullscreen='false'>
+      <camera name='user_camera'>
+        <pose>0.31965399999999999 -0.23500199999999999 9.2944099999999992 1.522609579747792e-17 1.5138000000000049 0.0095990000000000172</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    <physics type='ode'>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <iters>150</iters>
+          <precon_iters>0</precon_iters>
+          <sor>1.3999999999999999</sor>
+          <use_dynamic_moi_rescaling>true</use_dynamic_moi_rescaling>
+        </solver>
+        <constraints>
+          <cfm>1.0000000000000001e-05</cfm>
+          <erp>0.20000000000000001</erp>
+          <contact_max_correcting_vel>2000</contact_max_correcting_vel>
+          <contact_surface_layer>0.01</contact_surface_layer>
+        </constraints>
+      </ode>
+    </physics>
+    <gravity>0 0 -9.8000000000000007</gravity>
+    <magnetic_field>5.5644999999999998e-06 2.2875799999999999e-05 -4.2388400000000002e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <model name='ground_plane'>
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.800000012 0.800000012 0.800000012 1</ambient>
+            <diffuse>0.800000012 0.800000012 0.800000012 1</diffuse>
+            <specular>0.800000012 0.800000012 0.800000012 1</specular>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='batu1'>
+      <static>true</static>
+      <pose>13 0.80000000000000004 0.01 1.2000000000000002 1.3877787807814457e-16 -0.50000000000000022</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.69999999999999996 0.5 0.5</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.69999999999999996 0.5 0.5</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.540000021 0.270000011 0.0700000003 1</ambient>
+            <diffuse>0.540000021 0.270000011 0.0700000003 1</diffuse>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='batu2'>
+      <static>true</static>
+      <pose>17 0.90000000000000002 0.01 1.2000000000000002 1.3877787807814457e-16 -0.50000000000000022</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.69999999999999996 0.5 0.5</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.69999999999999996 0.5 0.5</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.540000021 0.270000011 0.0700000003 1</ambient>
+            <diffuse>0.540000021 0.270000011 0.0700000003 1</diffuse>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='batu3'>
+      <static>true</static>
+      <pose>23 -1.2 0.01 -1.2000000000000004 5.5511151231257827e-17 0.30000000000000004</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.69999999999999996 0.5 0.5</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.69999999999999996 0.5 0.5</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.540000021 0.270000011 0.0700000003 1</ambient>
+            <diffuse>0.540000021 0.270000011 0.0700000003 1</diffuse>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='garis'>
+      <static>true</static>
+      <pose>25 0 0 0 0 0</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>30 0.10000000000000001 0.01</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>30 0.10000000000000001 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.540000021 0.270000011 0.0700000003 1</ambient>
+            <diffuse>0.540000021 0.270000011 0.0700000003 1</diffuse>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='polebot_land' canonical_link='base_link'>
+      <link name='base_link'>
+        <must_be_base_link>true</must_be_base_link>
+        <visual name='base_link_visual'>
+          <pose relative_to='base_link'>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>file:///home/labrobot-desktop2/polebot_land_ws/install/polebot_land_description/share/polebot_land_description/src/description//meshes/polebot_land.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0 0.400000006 0.5 1</ambient>
+            <diffuse>0 0.400000006 0.5 1</diffuse>
+          </material>
+        </visual>
+        <collision name='base_link_collision'>
+          <geometry>
+            <box>
+              <size>1.22 1 0.25</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <pose>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <link name='base_footprint'>
+        <pose>0 0 -0.90999999999999992 0 -6.5038726925899687e-34 0</pose>
+        <inertial>
+          <pose>0 0 0 1.5707963267948963 0 1.5707963267948963</pose>
+          <mass>67</mass>
+          <inertia>
+            <ixx>9.7060666666666666</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>6.9791666666666661</iyy>
+            <iyz>0</iyz>
+            <izz>13.893566666666665</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <joint name='base_joint' type='fixed'>
+        <parent>base_link</parent>
+        <child>base_footprint</child>
+        <pose>0 0 0 0 0 0</pose>
+      </joint>
+      <link name='drivewhl_fl_link'>
+        <pose>-0.56999999999999984 0.432 -0.72499999999999998 -5.050361500696e-34 -1.737049949558847e-15 4.3863650950189646e-49</pose>
+        <visual name='drivewhl_fl_link_visual'>
+          <pose relative_to='drivewhl_fl_link'>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>file:///home/labrobot-desktop2/polebot_land_ws/install/polebot_land_description/share/polebot_land_description/src/description//meshes/wheel.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+          </material>
+        </visual>
+        <collision name='drivewhl_fl_link_collision'>
+          <pose relative_to='drivewhl_fl_link'>0 0 0 1.5707963267948963 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.185</radius>
+              <length>0.098000000000000004</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <inertial>
+          <pose>0 0 0 1.5707963267948963 0 0</pose>
+          <mass>0.5</mass>
+          <inertia>
+            <ixx>0.0046782916666666657</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0046782916666666657</iyy>
+            <iyz>0</iyz>
+            <izz>0.0085562499999999996</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <joint name='drivewhl_fl_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>drivewhl_fl_link</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-inf</lower>
+            <upper>inf</upper>
+            <effort>inf</effort>
+            <velocity>inf</velocity>
+            <stiffness>100000000</stiffness>
+            <dissipation>1</dissipation>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+            <damping>0</damping>
+            <friction>0</friction>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='drivewhl_fr_link'>
+        <pose>-0.56999999999999984 -0.432 -0.72499999999999998 -3.4780470510247291e-34 -3.755630621399973e-15 6.5311300037491732e-49</pose>
+        <visual name='drivewhl_fr_link_visual'>
+          <pose relative_to='drivewhl_fr_link'>0 0 0 0 0 -3.1415926535897931</pose>
+          <geometry>
+            <mesh>
+              <uri>file:///home/labrobot-desktop2/polebot_land_ws/install/polebot_land_description/share/polebot_land_description/src/description//meshes/wheel.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+          </material>
+        </visual>
+        <collision name='drivewhl_fr_link_collision'>
+          <pose relative_to='drivewhl_fr_link'>0 0 0 1.5707963267948963 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.185</radius>
+              <length>0.098000000000000004</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <inertial>
+          <pose>0 0 0 1.5707963267948963 0 0</pose>
+          <mass>0.5</mass>
+          <inertia>
+            <ixx>0.0046782916666666657</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0046782916666666657</iyy>
+            <iyz>0</iyz>
+            <izz>0.0085562499999999996</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <joint name='drivewhl_fr_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>drivewhl_fr_link</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-inf</lower>
+            <upper>inf</upper>
+            <effort>inf</effort>
+            <velocity>inf</velocity>
+            <stiffness>100000000</stiffness>
+            <dissipation>1</dissipation>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+            <damping>0</damping>
+            <friction>0</friction>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='drivewhl_rl_link'>
+        <pose>0.56999999999999984 0.432 -0.72499999999999987 -1.7861836544244669e-33 -2.1195033033414276e-16 1.8929110779635602e-49</pose>
+        <visual name='drivewhl_rl_link_visual'>
+          <pose relative_to='drivewhl_rl_link'>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>file:///home/labrobot-desktop2/polebot_land_ws/install/polebot_land_description/share/polebot_land_description/src/description//meshes/wheel.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+          </material>
+        </visual>
+        <collision name='drivewhl_rl_link_collision'>
+          <pose relative_to='drivewhl_rl_link'>0 0 0 1.5707963267948963 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.185</radius>
+              <length>0.098000000000000004</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <inertial>
+          <pose>0 0 0 1.5707963267948963 0 0</pose>
+          <mass>0.5</mass>
+          <inertia>
+            <ixx>0.0046782916666666657</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0046782916666666657</iyy>
+            <iyz>0</iyz>
+            <izz>0.0085562499999999996</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <joint name='drivewhl_rl_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>drivewhl_rl_link</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-inf</lower>
+            <upper>inf</upper>
+            <effort>inf</effort>
+            <velocity>inf</velocity>
+            <stiffness>100000000</stiffness>
+            <dissipation>1</dissipation>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+            <damping>0</damping>
+            <friction>0</friction>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='drivewhl_rr_link'>
+        <pose>0.56999999999999984 -0.432 -0.72499999999999987 -4.7953879389104866e-34 2.7633791249824577e-16 -6.625737463288946e-50</pose>
+        <visual name='drivewhl_rr_link_visual'>
+          <pose relative_to='drivewhl_rr_link'>0 0 0 0 0 -3.1415926535897931</pose>
+          <geometry>
+            <mesh>
+              <uri>file:///home/labrobot-desktop2/polebot_land_ws/install/polebot_land_description/share/polebot_land_description/src/description//meshes/wheel.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.300000012 0.300000012 0.300000012 1</ambient>
+            <diffuse>0.699999988 0.699999988 0.699999988 1</diffuse>
+          </material>
+        </visual>
+        <collision name='drivewhl_rr_link_collision'>
+          <pose relative_to='drivewhl_rr_link'>0 0 0 1.5707963267948963 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.185</radius>
+              <length>0.098000000000000004</length>
+            </cylinder>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <inertial>
+          <pose>0 0 0 1.5707963267948963 0 0</pose>
+          <mass>0.5</mass>
+          <inertia>
+            <ixx>0.0046782916666666657</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0046782916666666657</iyy>
+            <iyz>0</iyz>
+            <izz>0.0085562499999999996</izz>
+          </inertia>
+        </inertial>
+        <enable_wind>false</enable_wind>
+      </link>
+      <joint name='drivewhl_rr_joint' type='revolute'>
+        <parent>base_link</parent>
+        <child>drivewhl_rr_link</child>
+        <pose>0 0 0 0 0 0</pose>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-inf</lower>
+            <upper>inf</upper>
+            <effort>inf</effort>
+            <velocity>inf</velocity>
+            <stiffness>100000000</stiffness>
+            <dissipation>1</dissipation>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+            <damping>0</damping>
+            <friction>0</friction>
+          </dynamics>
+        </axis>
+      </joint>
+      <joint name='imu_joint' type='fixed'>
+        <parent>base_link</parent>
+        <child>imu_link</child>
+        <pose>0 0 0 0 0 0</pose>
+      </joint>
+      <link name='imu_link'>
+        <pose>5.5511151231257827e-17 2.4651903288156619e-32 0.010000000000000009 0 -6.5038726925899687e-34 0</pose>
+        <visual name='imu_link_visual'>
+          <geometry>
+            <box>
+              <size>0.10000000000000001 0.10000000000000001 0.10000000000000001</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name='imu_link_collision'>
+          <geometry>
+            <box>
+              <size>0.10000000000000001 0.10000000000000001 0.10000000000000001</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode/>
+            </friction>
+            <bounce/>
+            <contact/>
+          </surface>
+        </collision>
+        <inertial>
+          <pose>0 0 0 1.5707963267948963 0 1.5707963267948963</pose>
+          <mass>0.10000000000000001</mass>
+          <inertia>
+            <ixx>0.00016666666666666669</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.00016666666666666669</iyy>
+            <iyz>0</iyz>
+            <izz>0.00016666666666666669</izz>
+          </inertia>
+        </inertial>
+        <sensor name='imu_sensor' type='imu'>
+          <pose>0 0 0 0 0 0</pose>
+          <topic>/imu</topic>
+          <update_rate>100</update_rate>
+          <enable_metrics>false</enable_metrics>
+          <imu>
+            <orientation_reference_frame>
+              <localization>CUSTOM</localization>
+              <custom_rpy>0 0 0</custom_rpy>
+              <grav_dir_x>1 0 0</grav_dir_x>
+            </orientation_reference_frame>
+            <angular_velocity>
+              <x>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.00020000000000000001</stddev>
+                  <bias_mean>7.5000000000000002e-06</bias_mean>
+                  <bias_stddev>7.9999999999999996e-07</bias_stddev>
+                  <dynamic_bias_stddev>0</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>0</dynamic_bias_correlation_time>
+                  <precision>0</precision>
+                </noise>
+              </x>
+              <y>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.00020000000000000001</stddev>
+                  <bias_mean>7.5000000000000002e-06</bias_mean>
+                  <bias_stddev>7.9999999999999996e-07</bias_stddev>
+                  <dynamic_bias_stddev>0</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>0</dynamic_bias_correlation_time>
+                  <precision>0</precision>
+                </noise>
+              </y>
+              <z>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.00020000000000000001</stddev>
+                  <bias_mean>7.5000000000000002e-06</bias_mean>
+                  <bias_stddev>7.9999999999999996e-07</bias_stddev>
+                  <dynamic_bias_stddev>0</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>0</dynamic_bias_correlation_time>
+                  <precision>0</precision>
+                </noise>
+              </z>
+            </angular_velocity>
+            <linear_acceleration>
+              <x>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.017000000000000001</stddev>
+                  <bias_mean>0.10000000000000001</bias_mean>
+                  <bias_stddev>0.001</bias_stddev>
+                  <dynamic_bias_stddev>0</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>0</dynamic_bias_correlation_time>
+                  <precision>0</precision>
+                </noise>
+              </x>
+              <y>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.017000000000000001</stddev>
+                  <bias_mean>0.10000000000000001</bias_mean>
+                  <bias_stddev>0.001</bias_stddev>
+                  <dynamic_bias_stddev>0</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>0</dynamic_bias_correlation_time>
+                  <precision>0</precision>
+                </noise>
+              </y>
+              <z>
+                <noise type='gaussian'>
+                  <mean>0</mean>
+                  <stddev>0.017000000000000001</stddev>
+                  <bias_mean>0.10000000000000001</bias_mean>
+                  <bias_stddev>0.001</bias_stddev>
+                  <dynamic_bias_stddev>0</dynamic_bias_stddev>
+                  <dynamic_bias_correlation_time>0</dynamic_bias_correlation_time>
+                  <precision>0</precision>
+                </noise>
+              </z>
+            </linear_acceleration>
+            <enable_orientation>true</enable_orientation>
+          </imu>
+        </sensor>
+        <enable_wind>false</enable_wind>
+      </link>
+      <plugin name='gz::sim::systems::DiffDrive' filename='gz-sim-diff-drive-system'>
+        <front_left_joint>drivewhl_fl_joint</front_left_joint>
+        <front_right_joint>drivewhl_fr_joint</front_right_joint>
+        <rear_left_joint>drivewhl_rl_joint</rear_left_joint>
+        <rear_right_joint>drivewhl_rr_joint</rear_right_joint>
+        <wheel_separation>0.864</wheel_separation>
+        <wheel_radius>0.185</wheel_radius>
+        <max_linear_acceleration>0.1</max_linear_acceleration>
+        <topic>/cmd_vel</topic>
+        <odom_topic>/odom</odom_topic>
+        <tf_topic>/tf</tf_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_link</child_frame_id>
+      </plugin>
+      <plugin name='gz::sim::systems::JointStatePublisher' filename='gz-sim-joint-state-publisher-system'>
+        <topic>joint_states</topic>
+      </plugin>
+      <pose>0.5 7.8234284761513515e-17 0.5068438176555462 -1.8482786260529929e-17 7.6397249245857476e-17 -7.037762165198024e-17</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+  </world>
+</sdf>

@@ -17,7 +17,7 @@ def generate_launch_description():
     use_ros2_control = LaunchConfiguration('use_ros2_control')
 
     # Load the robot description from a xacro file
-    pkg_path = os.path.join(get_package_share_directory('robotpadi'))
+    pkg_path = os.path.join(get_package_share_directory('polebot_land'))
     xacro_file = os.path.join(pkg_path,'urdf','main.xacro')
     robot_description_config = Command(['xacro ', xacro_file, ' use_ros2_control:=', use_ros2_control, ' use_sim_mode:=', use_sim_time])
     
@@ -53,5 +53,5 @@ def generate_launch_description():
             description='Use ros2_control if true'),
 
         node_robot_state_publisher,
-        # rviz_node
+        rviz_node 
     ])

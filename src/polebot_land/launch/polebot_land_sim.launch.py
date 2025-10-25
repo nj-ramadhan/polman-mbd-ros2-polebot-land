@@ -13,7 +13,7 @@ from launch.substitutions import FindExecutable
 def generate_launch_description():
 
     # --- Konfigurasi Umum ---
-    pkg_project_name = 'robotpadi' 
+    pkg_project_name = 'polebot_land' 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     
     # --- Path ke File & Direktori ---
@@ -28,13 +28,14 @@ def generate_launch_description():
     robot_file = os.path.join(pkg_path, 'urdf', 'main.xacro')
     rviz_file = os.path.join(pkg_path, 'rviz', 'view.rviz')
 
-    micro_ros_agent_process = ExecuteProcess(
-        cmd=[
-            FindExecutable(name='ros2'), 'run', 'micro_ros_agent', 'micro_ros_agent',
-            'serial', '--', 'dev', '/dev/ttyUSB0'  # <-- SESUAIKAN PORT SERIAL ANDA
-        ],
-        output='screen'
-    )
+    # Disabled for simulation only
+    # micro_ros_agent_process = ExecuteProcess(
+    #     cmd=[
+    #         FindExecutable(name='ros2'), 'run', 'micro_ros_agent', 'micro_ros_agent',
+    #         'serial', '--', 'dev', '/dev/ttyUSB0'  # <-- SESUAIKAN PORT SERIAL ANDA
+    #     ],
+    #     output='screen'
+    # )
     # Include launch file untuk EKF
     # Panggil launch file dari paket robot_localization_bringup
     # localization_launch = IncludeLaunchDescription(
@@ -87,7 +88,7 @@ def generate_launch_description():
         executable='create',
         arguments=[
             '-topic', '/robot_description',
-            '-name', 'my_robot',
+            '-name', 'polebot_land',
             '-x', '10.0',
             '-y', '0.0',
             '-z', '2.0'
@@ -101,13 +102,22 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[ 
-                    '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-                    '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
-                    '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
-	                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
-	                '/joint_states@sensor_msgs/msg/JointState@gz.msgs.Model',
-                    '/imu/data@sensor_msgs/msg/Imu@gz.msgs.IMU'
-                    ],
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/cmd_vel_unstamped@geometry_msgs/msg/Twist@gz.msgs.Twist',
+            '/model/polebot_land/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
+            '/model/polebot_land/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+            '/diff_drive_controller/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+            '/model/polebot_land/joint_state@sensor_msgs/msg/JointState@gz.msgs.Model',
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+            '/model/polebot_land/imu@sensor_msgs/msg/Imu[gz.msgs.IMU'
+        ],
+        remappings=[
+            ('/model/polebot_land/odometry', '/diff_drive_controller/odom'),
+            ('/model/polebot_land/cmd_vel', '/cmd_vel_unstamped'),
+            ('/model/polebot_land/joint_state', '/joint_states'),
+            ('/model/polebot_land/imu', '/imu/data')
+        ],
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
@@ -125,11 +135,24 @@ def generate_launch_description():
     # --- 8. Controller Manager ---
     # Load the robot controllers configuration
     robot_controllers = os.path.join(pkg_path, 'config', 'diff_drive_controller.yaml')
+    
+    controller_manager_node = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[
+            {"robot_description": robot_description},
+            robot_controllers,
+            {"use_sim_time": use_sim_time}
+        ],
+        output="screen",
+    )
+    
     # Spawn joint state broadcaster controllers
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_state_broadcaster'],
+        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+        parameters=[{'use_sim_time': use_sim_time}],
     )
     
     # Spawn diff drive controller
@@ -138,68 +161,73 @@ def generate_launch_description():
         executable='spawner',
         arguments=[
             'diff_drive_controller',
-            '--param-file',
-            robot_controllers,
-            ],
+            '--controller-manager', '/controller_manager',
+            '--param-file', robot_controllers,
+        ],
+        parameters=[{'use_sim_time': use_sim_time}],
     )
 
     joystick = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource ([os.path.join(get_package_share_directory('robotpadi'),'launch','teleop_joy.launch.py')
+            PythonLaunchDescriptionSource ([os.path.join(get_package_share_directory('polebot_land'),'launch','teleop_joy.launch.py')
                                         ]), launch_arguments={'use_sim_time': 'true'}.items()
             )
 
-    twist_mux_params = os.path.join(get_package_share_directory('robotpadi'),'config','twist_mux.yaml')
+    twist_mux_params = os.path.join(get_package_share_directory('polebot_land'),'config','twist_mux.yaml')
     twist_mux = Node(
             package="twist_mux",
             executable="twist_mux",
             parameters=[twist_mux_params, {'use_sim_time': True}],
-            remappings=[('/cmd_vel_out','/diff_drive_controller/cmd_vel_unstamped')],
+            remappings=[
+                ('/cmd_vel_out','/cmd_vel_unstamped'),
+                ('/cmd_vel','/cmd_vel_unstamped')
+            ],
+            output='screen',
         )   
 
     # Node untuk Sliding Mode Controller
     smc_controller_node = Node(
-            package='smc_controller',
-            executable='smc_controller',  # Name of the Python file or executable
-            name='smc_controller_node',
+            package='polebot_land_smc_controller',
+            executable='polebot_land_smc_controller',  # Name of the Python file or executable
+            name='polebot_land_smc_controller_node',
             output='screen',
             remappings=[('/cmd_vel', '/cmd_vel_unstamped')],
             parameters=[{'use_sim_time': use_sim_time}],
     )
 
     coordinate_publisher_node = Node(
-        package='coordinate_publisher',
-        executable='coordinate_publisher',
-        name='coordinate_publisher_node',
+        package='polebot_land_coordinate_publisher',
+        executable='polebot_land_coordinate_publisher',
+        name='polebot_land_coordinate_publisher_node',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
-    line_creator_node = Node(
-        package='line_creator',
-        executable='line_creator',
-        name='line_creator_node',
+    trajectory_creator_node = Node(
+        package='polebot_land_trajectory_creator',
+        executable='polebot_land_trajectory_creator',
+        name='polebot_land_trajectory_creator_node',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
-    # Node untuk bridge ke Arduino
-    arduino_driver_node = Node(
-        package='arduino_driver',
-        executable='arduino_driver',
-        name='cmd_vel_serial_bridge', # Sesuaikan dengan nama di dalam script Python
-        output='screen',
-        emulate_tty=True, 
-        remappings=[
-            ('/cmd_vel', '/cmd_vel_unstamped')
-        ]  # Berguna untuk memastikan output print() muncul
-    )
+    # Disabled for simulation only
+    # arduino_driver_node = Node(
+    #     package='polebot_land_hw_arduino_driver',
+    #     executable='polebot_land_hw_arduino_driver',
+    #     name='cmd_vel_serial_bridge',
+    #     output='screen',
+    #     emulate_tty=True, 
+    #     remappings=[
+    #         ('/cmd_vel', '/cmd_vel_unstamped')
+    #     ]
+    # )
 
-    esp_encoder_node = Node(
-        package='esp_encoder',
-        executable='esp_encoder',
-        name='encoder_to_odom', # Sesuaikan dengan nama di dalam script Python
-        output='screen',
-    )
+    # esp_encoder_node = Node(
+    #     package='polebot_land_hw_esp_encoder',
+    #     executable='polebot_land_hw_esp_encoder',
+    #     name='encoder_to_odom',
+    #     output='screen',
+    # )
 
     run_plotjuggler = ExecuteProcess(
         cmd=['ros2', 'run', 'plotjuggler', 'plotjuggler'],
@@ -228,23 +256,23 @@ def generate_launch_description():
         gz_sim,
         robot_state_publisher,
         gz_ros_bridge,
-        # localization_launch,  # Include EKF localization
+        
         # Spawn robot ke dalam Gazebo
         spawn_robot,
-        run_plotjuggler,
-        # Jalankan node-node lain
-        joystick,
-        twist_mux,  
-        smc_controller_node,
-        coordinate_publisher_node,
-        line_creator_node,
-        arduino_driver_node,
-        micro_ros_agent_process,
-        esp_encoder_node,
-
-        # --- JALANKAN SPAWNER SECARA LANGSUNG ---
-        # Spawner ini akan otomatis menunggu Controller Manager siap
+        
+        # Controllers
+        controller_manager_node,
         joint_state_broadcaster_spawner,
         diff_drive_base_controller_spawner,
+        
+        # Navigation and Control
+        twist_mux,
+        smc_controller_node,
+        coordinate_publisher_node,
+        trajectory_creator_node,
+        
+        # Optional components
+        joystick,
+        run_plotjuggler,
     ])
   
